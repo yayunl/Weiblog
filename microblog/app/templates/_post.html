@@ -1,0 +1,54 @@
+{% for post in posts %}
+    <table class="table table-hover">
+        <!-- Can the pagination be implemented here?! -->
+        <tr>
+            <td width="70px">
+                <a href="{{ url_for('core.user_profile', username=post.author.username) }}"><img src="{{ post.author.avatar(36) }}"></a>
+            </td>
+
+             <td>
+                 {% set user_link %}
+                     <span class="user_popup">
+                         <a href="{{ url_for('core.user_profile', username=post.author.username) }}">{{ post.author.username }}</a>
+                     </span>
+                 {% endset %}
+
+                 {{ _('%(username)s said %(when)s', username=user_link, when=moment(post.timestamp).fromNow()) }}
+                 <br>
+
+                 <span id="post{{ post.id }}">{{ post.body }}</span>
+                 <br>
+
+                 {% if post.language and post.language != g.locale %}
+                     <br>
+                     <span id="translation{{ post.id }}">
+                         <a href="javascript:translate(
+                                '#post{{ post.id }}',
+                                '#translation{{ post.id }}',
+                                '{{ g.locale }}');">{{ _('Translate') }}</a>
+                     </span>
+                 {% endif %}
+
+             </td>
+
+
+        </tr>
+    </table>
+{% endfor %}
+
+
+{# Pagination #}
+<nav aria-label="...">
+    <ul class="pager">
+        <li class="previous{% if not prev_page_url %} disabled{% endif %}">
+            <a href="{{ prev_page_url or '#' }}">
+                <span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}
+            </a>
+        </li>
+        <li class="next{% if not next_page_url %} disabled{% endif %}">
+            <a href="{{ next_page_url or '#' }}">
+                {{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

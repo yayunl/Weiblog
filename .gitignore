@@ -1,0 +1,15 @@
+secrets.txt
+.env
+__pycache__
+.idea
+.deb
+.pyc
+.db
+run_app.py
+microblog/logs
+microblog/migrations
+venv
+notes.txt
+requirements_org.txt
+elasticsearch-7.6.2-amd64.deb
+elasticsearch-7.6.2-amd64.deb.sha512

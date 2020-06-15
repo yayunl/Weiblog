@@ -1,0 +1,8 @@
+venv
+#.env
+.git
+.cache
+*.db
+__pycache__/*
+migrations
+logs

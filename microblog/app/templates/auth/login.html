@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <h1>{{ _('Sign In') }}</h1>
+    {% from "_formhelpers.html" import render_field %}
+    <form action="" method="post">
+        {{ form.csrf_token }}
+        <dl>
+            {{ render_field(form.username) }}
+            {{ render_field(form.password) }}
+            {{ render_field(form.remember_me) }}
+            {{ form.submit }}
+        </dl>
+{#        <p><input type=submit value="Sign in">#}
+        <p>{{ _('New User?') }} <a href="{{ url_for('auth.register') }}">{{ _('Register') }}</a> </p>
+        <p>{{ _('Forgot password?') }} <a href="{{ url_for('auth.reset_password_request') }}">{{ _('Click to Reset')  }}</a> </p>
+    </form>
+{% endblock %}

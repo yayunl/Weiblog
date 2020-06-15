@@ -1,0 +1,132 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+        {% if title %}
+            {{ _('%(title)s - Microblog', title=title)}}
+        {% else  %}
+            {{ _('Welcome to Microblog!') }}
+        {% endif %}
+{% endblock %}
+
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">{{ _('Toggle navigation') }}</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('core.index') }}">{{ _('Microblog') }}</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('core.index') }}">{{ _('Home')  }}</a></li>
+                    <li><a href="{{ url_for('core.explore') }}">{{ _('Explore') }}</a></li>
+                </ul>
+
+                {% if g.search_form %}
+                <form class="navbar-form navbar-left" method="get" action="{{ url_for('core.search') }}">
+                    <div class="form-group">
+                        {{ g.search_form.q(size=20, class='form-control', placeholder=g.search_form.q.label.text) }}
+                    </div>
+                </form>
+                {% endif %}
+
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('core.user_profile', username=current_user.username) }}">{{ _('Profile')}}</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">{{ _('Logout') }}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        {% with messages=get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+
+    {% block app_content %}
+    {% endblock %}
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+    {{ moment.lang(g.locale) }}
+
+    <script>
+    function translate(sourceElem, targetElem, toLang) {
+        $(targetElem).html('<img app="{{ url_for('static', filename='loading.gif') }}">');
+        $.post('/translate', {
+           text: $(sourceElem).text(),
+           toLang: toLang
+        }).done(function (response) {
+            $(targetElem).text(response['text']);
+        }).fail(function () {
+            $(targetElem).text("{{ _("Error: Could not contact server!") }}");
+        });
+    }
+
+    $(function () {
+        var timer = null;
+        $('.user_popup').hover(
+            // mouse in event handler
+            function(event){
+                var elem = event.currentTarget;
+                timer = setTimeout(function () {
+                    timer = null;
+                    // popup logic
+                    xhr = $.ajax('/user/'+elem.first().text().trim()+'/popup').done(
+                        function (data) {
+                            // create popup page
+                            xhr =null;
+                            elem.popover({
+                                trigger: 'manual',
+                                html: true,
+                                animation:false,
+                                container:elem,
+                                content:data
+                            }).popover('show');
+                            flask_moment_render_all();
+                        }
+                    )
+                }, 1000); // 1s timeout
+            },
+
+            // mouser out event handler
+            function(event){
+                var elem = event.currentTarget;
+
+                if(timer){
+                    clearTimeout(timer);
+                    timer = null;
+                }
+                else if(xhr){
+                    xhr.abort();
+                    xhr=null;
+                }
+                else{
+                    // destroy popup
+                    elem.popover('destroy');
+                }
+            }
+        )
+    })
+    </script>
+{% endblock %}

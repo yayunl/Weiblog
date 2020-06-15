@@ -1,0 +1,52 @@
+version: "3.7"
+
+services:
+  web:
+    build: ./microblog
+#    image: microblog:latest
+    ports:
+      - 5000:5000
+    env_file:
+      - .env
+    environment:
+      - FLASK_APP=microblog.py
+    depends_on:
+      - db
+      - elasticsearch
+    networks:
+      - backend
+#    volumes:
+#      - ./microblog/:/usr/code/microblog
+
+  db:
+    image: mysql/mysql-server:latest
+#    env_file:
+#      - .env
+    expose:
+      - 3306
+    environment:
+      - MYSQL_DATABASE=microblog
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=p@ssw0rd
+      - MYSQL_ROOT_PASSWORD=p@ssw0rd
+
+    networks:
+      - backend
+#    volumes:
+#      - mysql_data:/var/lib/mysql
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - backend
+
+networks:
+  backend:
+
+#volumes:
+#  mysql_data:

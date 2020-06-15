@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Edit</h1>
+
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post>
+        {{ form.csrf_token }}
+        <dl>
+            {{ render_field(form.username) }}
+            {{ render_field(form.about_me) }}
+        </dl>
+         <p><input type=submit value=Submit>
+    </form>
+
+{% endblock %}
