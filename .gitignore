@@ -5,6 +5,8 @@ __pycache__
 .deb
 .pyc
 .db
+migrations
+logs
 run_app.py
 microblog/logs
 microblog/migrations

@@ -4,5 +4,5 @@ venv
 .cache
 *.db
 __pycache__/*
-migrations
+#migrations
 logs
