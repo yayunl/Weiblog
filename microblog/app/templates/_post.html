@@ -36,19 +36,4 @@
     </table>
 {% endfor %}
 
-
-{# Pagination #}
-<nav aria-label="...">
-    <ul class="pager">
-        <li class="previous{% if not prev_page_url %} disabled{% endif %}">
-            <a href="{{ prev_page_url or '#' }}">
-                <span aria-hidden="true">&larr;</span> {{ _('Newer posts') }}
-            </a>
-        </li>
-        <li class="next{% if not next_page_url %} disabled{% endif %}">
-            <a href="{{ next_page_url or '#' }}">
-                {{ _('Older posts') }} <span aria-hidden="true">&rarr;</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+{% include '_pagination.html' %}

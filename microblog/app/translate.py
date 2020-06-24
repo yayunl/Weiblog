@@ -16,7 +16,8 @@ def translate(text, language):
         return _('Error: the translation service is not configured.')
 
     headers = {'Ocp-Apim-Subscription-Key': current_app.config['MS_TRANSLATION_KEY'],
-               'Content-Type': 'application/json'}
+               'Content-Type': 'application/json',
+               'Ocp-Apim-Subscription-Region': 'australiaeast'}
 
     data = json.dumps([{'Text': text}])
     r = requests.post('https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to={lang}'.format(

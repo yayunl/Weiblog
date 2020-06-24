@@ -5,6 +5,7 @@ from flask_babel import _
 # microblog imports
 from .. import db
 from ..models import User
+from ..api.errors import error_response
 # sub feature imports
 from .forms import LoginForm, RegistrationForm, ResetPasswordConfirmationForm, ResetPasswordRequestForm
 from .email import send_password_reset_email

@@ -1,7 +1,8 @@
 from flask import Flask
+from redis import Redis
 from elasticsearch import Elasticsearch as El
 from .extensions import db, mail, bootstrap, moment, migrate, babel, login, stream_handler, file_handler
-import logging
+import logging, rq
 # from microblog import cli
 from .config import Config
 
@@ -36,6 +37,10 @@ def create_app(config_class=Config):
     app.logger.setLevel(logging.INFO)
     app.logger.info("Microblog startup.")
 
+    # Redis queue initialization
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    app.task_queue = rq.Queue('microblog-tasks', connection=app.redis)
+
     return app
 
 
@@ -48,6 +53,10 @@ def register_blueprints(flask_app):
 
     from .core import bp as core_bp
     flask_app.register_blueprint(core_bp, url_prefix='/')
+
+    # api
+    from .api import bp as api_bp
+    flask_app.register_blueprint(api_bp, url_prefix='/api')
 
 
 def initialize_extensions(flask_app):

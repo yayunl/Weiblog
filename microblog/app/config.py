@@ -34,3 +34,6 @@ class Config(object):
 
     # Logging
     FILE_LOG_PATH= os.path.join(os.path.join(basedir, 'logs'), 'microblog.log')
+
+    # Redis setting for async tasks
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://')

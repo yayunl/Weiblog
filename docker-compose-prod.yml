@@ -4,6 +4,7 @@ services:
   web:
     build: ./microblog
 #    image: microblog:latest
+    command: /bin/ash -c "/usr/code/startweb.sh"
     ports:
       - 5000:5000
     env_file:
@@ -11,27 +12,37 @@ services:
     depends_on:
       - db
       - elasticsearch
+      - rq_worker
     networks:
       - backend
-#    volumes:
-#      - ./microblog/:/usr/code/microblog
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./microblog/:/usr/code/
+
+  rq_worker:
+    build: ./microblog
+    command: /bin/ash -c "/usr/code/startworker.sh"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+    networks:
+      - backend
+    volumes:
+      - dbdata:/var/lib/mysql
 
   db:
     image: mysql:5.7
-#    env_file:
-#      - .env
+    env_file:
+      - .env
     ports:
       - 3306:3306
-    environment:
-      - MYSQL_DATABASE=microblog
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=password
 
     networks:
       - backend
-#    volumes:
-#      - dbdata:/var/lib/mysql
+    volumes:
+      - dbdata:/var/lib/mysql
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
@@ -40,6 +51,13 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
+    networks:
+      - backend
+
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
     networks:
       - backend
 

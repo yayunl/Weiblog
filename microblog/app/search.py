@@ -10,7 +10,7 @@ def add_to_index(index, model):
         payload[field] = getattr(model, field)
     current_app.logger.info(f"Index==> {index}")
 
-    current_app.elasticsearch.index(index='post', id=model.id, body=payload)
+    current_app.elasticsearch.index(index=index, id=model.id, body=payload)
 
 
 def remove_from_index(index, model):

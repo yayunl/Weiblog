@@ -1,4 +1,4 @@
-FROM python:3.9.0a6-alpine
+FROM python:3.7.7-alpine
 # Create a new user
 #RUN adduser -D blogowner
 
@@ -31,21 +31,22 @@ RUN apk add --virtual .build-deps gcc musl-dev libffi-dev libressl-dev python3-d
 
 # Copy files from the local machine to the container
 COPY app app
-COPY migrations migrations
+#COPY migrations migrations
 #RUN mkdir -p /usr/app/logs
 #COPY logs /usr/app/logs
-COPY microblog.py boot.sh ./
+COPY microblog.py startweb.sh startworker.sh ./
 
 ############################
-#### Run the microblog         ###
+#### Run the microblog   ###
 ############################
 
-# Make boot.sh accessible and exectuable
-RUN chmod a+x boot.sh
+# Make bash files accessible and exectuable
+RUN chmod a+x startweb.sh
+RUN chmod a+x startworker.sh
 # Set environment var
 ENV FLASK_APP microblog.py
 
 # Expose this port to gunicorn
 EXPOSE 5000
 # Start the web application with the shell script
-ENTRYPOINT ["./boot.sh"]
+#ENTRYPOINT ["./boot.sh"]

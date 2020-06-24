@@ -32,10 +32,10 @@ done
 echo "MySQL started"
 
 #flask db init
-#flask db migrate
-#flask db upgrade
+flask db migrate
+flask db upgrade
 
 # complie translation
-flask translate compile
+#flask translate compile
 # execute gunicorn and bind port 5000 to flask microblog
 exec gunicorn -b :5000 --access-logfile - --error-logfile - microblog:flask_app
